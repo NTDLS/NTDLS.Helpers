@@ -6,7 +6,7 @@ namespace NTDLS.Helpers
     /// <summary>
     /// Helper functions for dealing with text.
     /// </summary>
-    public static class TextHelpers
+    public static class Text
     {
         /// <summary>
         /// Inserts a line-break every n-characters where a line break exists.
