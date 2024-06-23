@@ -22,9 +22,9 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>netcore;nullability;simplification;conversion;task;helpers</PackageTags>
     <PackageReleaseNotes>
-      Initial package creation.
+      Added new text helpers.
     </PackageReleaseNotes>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <EnableNETAnalyzers>False</EnableNETAnalyzers>
     <Description>Helpers for dealing with nullable types, static analyzer, text, exceptions, tasks, async, conversion, etc..</Description>
   </PropertyGroup>

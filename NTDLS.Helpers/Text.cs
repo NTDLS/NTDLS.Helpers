@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Text.RegularExpressions;
 
 namespace NTDLS.Helpers
 {
@@ -43,6 +44,45 @@ namespace NTDLS.Helpers
             }
 
             return stringBuilder.ToString();
+        }
+
+        /// <summary>
+        /// Adds a space to seperate a set of camel-cased words.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static string SeperateCamelCase(string text)
+        {
+            return Regex.Replace(
+                        Regex.Replace(
+                            Regex.Replace(
+                                text,
+                                @"([a-z])([A-Z])", // Lowercase followed by uppercase
+                                "$1 $2"
+                            ),
+                            @"([A-Z])([A-Z][a-z])", // Uppercase followed by uppercase and lowercase
+                            "$1 $2"
+                        ),
+                        @"\s+",
+                        " "
+                    );
+        }
+
+        /// <summary>
+        /// Replaces the first occurrence of a string.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="search"></param>
+        /// <param name="replace"></param>
+        /// <returns></returns>
+        public static string ReplaceFirstOccurrence(string text, string search, string replace)
+        {
+            int pos = text.IndexOf(search);
+            if (pos < 0)
+            {
+                return text;
+            }
+            return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
         }
     }
 }

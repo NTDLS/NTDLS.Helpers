@@ -6,13 +6,13 @@
     /// </summary>
     public class Converters
     {
-       /// <summary>
-       /// Makes a best effort conversion from a string to the given type.
-       /// </summary>
-       /// <typeparam name="T"></typeparam>
-       /// <param name="value"></param>
-       /// <returns></returns>
-       /// <exception cref="Exception"></exception>
+        /// <summary>
+        /// Makes a best effort conversion from a string to the given type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static T ConvertTo<T>(string value)
         {
             if (typeof(T) == typeof(string))
