@@ -51,5 +51,41 @@
             try { return func(); } catch { }
             return default;
         }
+
+        /// <summary>
+        /// Executes the given delegate and ignores any exceptions.
+        /// </summary>
+        /// <param name="func">Delegate of primary function to call.</param>
+        /// <param name="onError">Delegate of function to call in the case of an exception.</param>
+        public static void OnError(TryAndIgnoreProc func, TryAndIgnoreProc onError)
+        {
+            try
+            {
+                func();
+            }
+            catch
+            {
+                onError();
+            }
+        }
+
+        /// <summary>
+        /// Executes the given delegate and ignores any exceptions
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="func">Delegate of primary function to call.</param>
+        /// <param name="onError">Delegate of function to call in the case of an exception.</param>
+        /// <returns></returns>
+        public static T? OnError<T>(TryAndIgnoreProc<T> func, TryAndIgnoreProc<T> onError)
+        {
+            try
+            {
+                return func();
+            }
+            catch
+            {
+                return onError();
+            }
+        }
     }
 }
