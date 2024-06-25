@@ -24,7 +24,7 @@
     <PackageReleaseNotes>
       Added OnError exception helpers.
     </PackageReleaseNotes>
-    <Version>1.0.4</Version>
+    <Version>1.0.5</Version>
     <EnableNETAnalyzers>False</EnableNETAnalyzers>
     <Description>Helpers for dealing with nullable types, static analyzer, text, exceptions, tasks, async, conversion, etc..</Description>
   </PropertyGroup>

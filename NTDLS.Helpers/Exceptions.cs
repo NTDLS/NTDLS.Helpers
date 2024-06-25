@@ -18,6 +18,18 @@
         public delegate T TryAndIgnoreProc<T>();
 
         /// <summary>
+        /// Delegate for handling exceptions.
+        /// </summary>
+        public delegate void OnErrorProc(Exception ex);
+
+        /// <summary>
+        /// Delegate for handling exceptions.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public delegate T OnErrorProc<T>(Exception ex);
+
+        /// <summary>
         /// Recursively gets the exception at the bottom of an exception -> InnerException stack.
         /// </summary>
         /// <param name="ex"></param>
@@ -57,15 +69,15 @@
         /// </summary>
         /// <param name="func">Delegate of primary function to call.</param>
         /// <param name="onError">Delegate of function to call in the case of an exception.</param>
-        public static void OnError(TryAndIgnoreProc func, TryAndIgnoreProc onError)
+        public static void OnError(TryAndIgnoreProc func, OnErrorProc onError)
         {
             try
             {
                 func();
             }
-            catch
+            catch (Exception ex)
             {
-                onError();
+                onError(ex);
             }
         }
 
@@ -76,15 +88,15 @@
         /// <param name="func">Delegate of primary function to call.</param>
         /// <param name="onError">Delegate of function to call in the case of an exception.</param>
         /// <returns></returns>
-        public static T? OnError<T>(TryAndIgnoreProc<T> func, TryAndIgnoreProc<T> onError)
+        public static T? OnError<T>(TryAndIgnoreProc<T> func, OnErrorProc<T> onError)
         {
             try
             {
                 return func();
             }
-            catch
+            catch(Exception ex)
             {
-                return onError();
+                return onError(ex);
             }
         }
     }
