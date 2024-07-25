@@ -84,5 +84,15 @@ namespace NTDLS.Helpers
             }
             return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
         }
+
+        /// <summary>
+        /// Removes all whitespace from a string.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string RemoveWhitespace(string input)
+            => new(input.ToCharArray()
+                .Where(c => !char.IsWhiteSpace(c))
+                .ToArray());
     }
 }
