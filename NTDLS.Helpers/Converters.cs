@@ -1,6 +1,5 @@
 ﻿namespace NTDLS.Helpers
 {
-
     /// <summary>
     /// Helper functions for type conversions.
     /// </summary>
@@ -9,12 +8,20 @@
         /// <summary>
         /// Makes a best effort conversion from a string to the given type.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public static T ConvertTo<T>(string value)
+        public static T ConvertTo<T>(string? value, T defaultValue)
+            => ConvertTo<T>(value) ?? defaultValue;
+
+        /// <summary>
+        /// Makes a best effort conversion from a string to the given type.
+        /// </summary>
+        public static T? ConvertTo<T>(string? value)
         {
+            if (value == null)
+            {
+                return default;
+            }
+
             if (typeof(T) == typeof(string))
             {
                 return (T)Convert.ChangeType(value, typeof(T));
