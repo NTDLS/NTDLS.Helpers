@@ -9,6 +9,24 @@ namespace NTDLS.Helpers
     public static class NullExtensions
     {
         /// <summary>
+        /// Returns true if the value is default.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool IsDefault<T>(this T? value)
+            => value == null || EqualityComparer<T>.Default.Equals(value, default(T));
+
+        /// <summary>
+        /// Returns true if the value is NOT default.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool IsNotDefault<T>(this T? value)
+            => value != null && !EqualityComparer<T>.Default.Equals(value, default(T));
+
+        /// <summary>
         /// Returns the value of the nullable type, throws an exception if the value is null.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
