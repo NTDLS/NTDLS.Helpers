@@ -69,6 +69,29 @@ namespace NTDLS.Helpers
         }
 
         /// <summary>
+        /// Splits a camel cased string into a list of tokens.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static List<string> SplitCamelCase(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return new();
+            }
+
+            var matches = Regex.Matches(text, @"([A-Z][a-z]+|[a-z]+|[A-Z]+(?=[A-Z][a-z]|$))");
+            var tokens = new List<string>();
+
+            foreach (Match match in matches)
+            {
+                tokens.Add(match.Value);
+            }
+
+            return tokens;
+        }
+
+        /// <summary>
         /// Replaces the first occurrence of a string.
         /// </summary>
         /// <param name="text"></param>
