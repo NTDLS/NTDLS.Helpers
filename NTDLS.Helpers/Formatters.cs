@@ -38,7 +38,7 @@
                 i++;
             }
 
-            return string.Format(format[i], dSize);
+            return string.Format(format[i], dSize.ToString("N2"));
         }
 
         /// <summary>
@@ -55,7 +55,7 @@
                 i++;
             }
 
-            return string.Format(format[i], size);
+            return string.Format(format[i], size.ToString("N2"));
         }
     }
 }

@@ -23,8 +23,9 @@
     <PackageTags>netcore;nullability;simplification;conversion;task;helpers</PackageTags>
     <PackageReleaseNotes>
       Added additional file-size formatter overloads.
+      Fixed file formatting decimals.
     </PackageReleaseNotes>
-    <Version>1.2.3</Version>
+    <Version>1.2.4</Version>
     <EnableNETAnalyzers>False</EnableNETAnalyzers>
     <Description>Helpers for dealing with nullable types, static analyzer, text, exceptions, tasks, async, conversion, etc..</Description>
   </PropertyGroup>
