@@ -45,6 +45,31 @@ namespace NTDLS.Helpers
         }
 
         /// <summary>
+        /// Returns the value of the nullable type with type casting, throws an exception if the value is null.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="message"></param>
+        /// <param name="paramName"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T EnsureNotNull<T>([NotNull] this object? value, string? message = null, [CallerArgumentExpression(nameof(value))] string paramName = "")
+        {
+            if (value == null)
+            {
+                if (message == null)
+                {
+                    throw new ArgumentNullException(paramName, "Value should not be null.");
+                }
+
+                throw new ArgumentException(message, paramName);
+            }
+            return (T)value;
+        }
+
+        /// <summary>
         /// Returns the value of the nullable guid, throws an exception if the value is null.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
