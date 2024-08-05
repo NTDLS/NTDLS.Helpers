@@ -34,11 +34,11 @@
         /// </summary>
         /// <param name="ex"></param>
         /// <returns></returns>
-        public static Exception GetRootException(Exception ex)
+        public static Exception? GetRoot(this Exception? ex)
         {
-            if (ex.InnerException != null)
+            if (ex?.InnerException != null)
             {
-                return GetRootException(ex.InnerException);
+                return GetRoot(ex.InnerException);
             }
             return ex;
         }
