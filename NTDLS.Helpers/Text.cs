@@ -9,6 +9,14 @@ namespace NTDLS.Helpers
     public static class Text
     {
         /// <summary>
+        /// Replaces a range within a string with another string.
+        /// </summary>
+        static string ReplaceRange(string original, int startIndex, int length, string replacement)
+        {
+            return original.Remove(startIndex, length).Insert(startIndex, replacement);
+        }
+
+        /// <summary>
         /// Inserts a line-break every n-characters where a line break exists.
         /// </summary>
         /// <param name="text"></param>
