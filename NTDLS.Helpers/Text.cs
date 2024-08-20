@@ -11,7 +11,7 @@ namespace NTDLS.Helpers
         /// <summary>
         /// Replaces a range within a string with another string.
         /// </summary>
-        static string ReplaceRange(string original, int startIndex, int length, string replacement)
+        public static string ReplaceRange(string original, int startIndex, int length, string replacement)
         {
             return original.Remove(startIndex, length).Insert(startIndex, replacement);
         }
