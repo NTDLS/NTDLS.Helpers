@@ -21,9 +21,15 @@
                 return default;
             }
 
+            var targetType = typeof(T);
+            if (Nullable.GetUnderlyingType(targetType) != null)
+            {
+                targetType = Nullable.GetUnderlyingType(targetType);
+            }
+
             if (typeof(T) == typeof(string))
             {
-                return (T)Convert.ChangeType(value, typeof(T));
+                return (T?)Convert.ChangeType(value, targetType.EnsureNotNull());
             }
             else if (typeof(T) == typeof(int))
             {
@@ -31,15 +37,15 @@
                 {
                     throw new Exception($"Error converting value [{value}] to integer.");
                 }
-                return (T)Convert.ChangeType(parsedResult, typeof(T));
+                return (T?)Convert.ChangeType(parsedResult, targetType.EnsureNotNull());
             }
-            else if (typeof(T) == typeof(ulong))
+            else if (typeof(T) == typeof(ulong?))
             {
                 if (ulong.TryParse(value.Replace(",", ""), out var parsedResult) == false)
                 {
                     throw new Exception($"Error converting value [{value}] to integer.");
                 }
-                return (T)Convert.ChangeType(parsedResult, typeof(T));
+                return (T?)Convert.ChangeType(parsedResult, targetType.EnsureNotNull());
             }
             else if (typeof(T) == typeof(float))
             {
@@ -47,7 +53,7 @@
                 {
                     throw new Exception($"Error converting value [{value}] to float.");
                 }
-                return (T)Convert.ChangeType(parsedResult, typeof(T));
+                return (T?)Convert.ChangeType(parsedResult, targetType.EnsureNotNull());
             }
             else if (typeof(T) == typeof(double))
             {
@@ -55,7 +61,7 @@
                 {
                     throw new Exception($"Error converting value [{value}] to double.");
                 }
-                return (T)Convert.ChangeType(parsedResult, typeof(T));
+                return (T?)Convert.ChangeType(parsedResult, targetType.EnsureNotNull());
             }
             else if (typeof(T) == typeof(bool))
             {
@@ -70,7 +76,7 @@
                 {
                     throw new Exception($"Error converting value [{value}] to boolean.");
                 }
-                return (T)Convert.ChangeType(parsedResult, typeof(T));
+                return (T?)Convert.ChangeType(parsedResult, targetType.EnsureNotNull());
             }
             else
             {
