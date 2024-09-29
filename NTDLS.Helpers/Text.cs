@@ -9,6 +9,23 @@ namespace NTDLS.Helpers
     public static class Text
     {
         /// <summary>
+        /// Returns a new string with the first occurrence of the given string replaced.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="search"></param>
+        /// <param name="replacement"></param>
+        /// <returns></returns>
+        public static string ReplaceFirst(this string input, string search, string replacement)
+        {
+            int pos = input.IndexOf(search);
+            if (pos < 0)
+            {
+                return input; // Return the original string if the search string is not found
+            }
+            return input.Substring(0, pos) + replacement + input.Substring(pos + search.Length);
+        }
+
+        /// <summary>
         /// Replaces a range within a string with another string.
         /// </summary>
         public static string ReplaceRange(string original, int startIndex, int length, string replacement)

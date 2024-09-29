@@ -27,7 +27,6 @@
         /// <summary>
         /// Starts a thread with the given delegate and no parameters.
         /// </summary>
-        /// <typeparam name="T">Type of the parameter to pass to the delegate.</typeparam>
         /// <param name="proc">Delegate function to call within the new thread.</param>
         public static void StartThread(StartThreadDelegate proc)
             => new Thread(() => proc()).Start();
