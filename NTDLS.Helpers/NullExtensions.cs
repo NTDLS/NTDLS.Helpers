@@ -11,18 +11,12 @@ namespace NTDLS.Helpers
         /// <summary>
         /// Returns true if the value is default.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
         public static bool IsDefault<T>(this T? value)
             => value == null || EqualityComparer<T>.Default.Equals(value, default(T));
 
         /// <summary>
         /// Returns true if the value is NOT default.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
         public static bool IsNotDefault<T>(this T? value)
             => value != null && !EqualityComparer<T>.Default.Equals(value, default(T));
 
@@ -45,15 +39,25 @@ namespace NTDLS.Helpers
         }
 
         /// <summary>
+        /// Returns the value of the nullable type, throws an exception if the value is null.
+        /// </summary>
+        public static T EnsureNotNull<T>(this T? value, string? message = null, [CallerArgumentExpression(nameof(value))] string paramName = "") where T : struct
+        {
+            if (value == null)
+            {
+                if (message == null)
+                {
+                    throw new ArgumentNullException(paramName, "Value should not be null.");
+                }
+
+                throw new ArgumentException(message, paramName);
+            }
+            return value.Value;
+        }
+
+        /// <summary>
         /// Returns the value of the nullable type with type casting, throws an exception if the value is null.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="message"></param>
-        /// <param name="paramName"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="ArgumentException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T EnsureNotNull<T>([NotNull] this object? value, string? message = null, [CallerArgumentExpression(nameof(value))] string paramName = "")
         {
@@ -70,53 +74,31 @@ namespace NTDLS.Helpers
         }
 
         /// <summary>
-        /// Returns the value of the nullable guid, throws an exception if the value is null.
+        /// Returns the value of the nullable type, throws an exception if the value is null.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Guid EnsureNotNull([NotNull] this Guid? value, [CallerArgumentExpression(nameof(value))] string strName = "")
+        public static T EnsureNotNullOrEmpty<T>(this T? value, string? message = null, [CallerArgumentExpression(nameof(value))] string paramName = "") where T : struct
         {
-            if (!value.HasValue)
+            if (value == null || value.HasValue == false)
             {
-                throw new ArgumentNullException("Value should not be null: '" + strName + "'.");
-            }
-            return (Guid)value;
-        }
+                if (message == null)
+                {
+                    throw new ArgumentNullException("Value should not be null or empty: '" + paramName + "'.");
+                }
 
-        /// <summary>
-        /// Returns the value of the nullable guid, throws an exception if the value is null or empty.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Guid EnsureNotNullOrEmpty([NotNull] this Guid? value, [CallerArgumentExpression(nameof(value))] string strName = "")
-        {
-            if (!value.HasValue || value == Guid.Empty)
-            {
-                throw new ArgumentNullException("Value should not be null or empty: '" + strName + "'.");
+                throw new ArgumentException(message, paramName);
             }
-            return (Guid)value;
-        }
-
-        /// <summary>
-        /// Returns the value of the guid, throws an exception if the value is empty.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Guid EnsureNotNullOrEmpty([NotNull] this Guid value, [CallerArgumentExpression(nameof(value))] string strName = "")
-        {
-            if (value == Guid.Empty)
-            {
-                throw new ArgumentNullException("Value should not be null or empty: '" + strName + "'.");
-            }
-            return value;
+            return value.Value;
         }
 
         /// <summary>
         /// Returns the value of the nullable string, throws an exception if the value is null or empty.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string EnsureNotNullOrEmpty([NotNull] this string? value, [CallerArgumentExpression(nameof(value))] string strName = "")
+        public static string EnsureNotNullOrEmpty([NotNull] this string? value, [CallerArgumentExpression(nameof(value))] string paramName = "")
         {
             if (string.IsNullOrEmpty(value))
             {
-                throw new ArgumentNullException("Value should not be null or empty: '" + strName + "'.");
+                throw new ArgumentNullException("Value should not be null or empty: '" + paramName + "'.");
             }
             return value;
         }
@@ -125,11 +107,11 @@ namespace NTDLS.Helpers
         /// Returns the value of the nullable string, throws an exception if the value is null or empty.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void EnsureNotNullOrWhiteSpace([NotNull] this string? value, [CallerArgumentExpression(nameof(value))] string strName = "")
+        public static void EnsureNotNullOrWhiteSpace([NotNull] this string? value, [CallerArgumentExpression(nameof(value))] string paramName = "")
         {
             if (string.IsNullOrWhiteSpace(value))
             {
-                throw new ArgumentNullException("Value should not be null or empty: '" + strName + "'.");
+                throw new ArgumentNullException("Value should not be null or empty: '" + paramName + "'.");
             }
         }
 
