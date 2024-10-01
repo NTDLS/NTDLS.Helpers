@@ -23,8 +23,9 @@
     <PackageTags>netcore;nullability;simplification;conversion;task;helpers</PackageTags>
     <PackageReleaseNotes>
       Added struct nullable extenstions.
+      Thread helper modifications.
     </PackageReleaseNotes>
-    <Version>1.3.0</Version>
+    <Version>1.3.1</Version>
     <EnableNETAnalyzers>False</EnableNETAnalyzers>
     <Description>Helpers for dealing with nullable types, static analyzer, text, exceptions, tasks, async, conversion, etc..</Description>
   </PropertyGroup>
