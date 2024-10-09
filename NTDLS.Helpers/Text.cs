@@ -34,38 +34,94 @@ namespace NTDLS.Helpers
         }
 
         /// <summary>
-        /// Inserts a line-break every n-characters where a line break exists.
+        /// Inserts line-breaks after n-characters after given whitespace or punctuation are encountered.
         /// </summary>
-        /// <param name="text"></param>
-        /// <param name="maxLineLength"></param>
-        /// <returns></returns>
-        public static string InsertLineBreaks(string text, int maxLineLength)
+        public static string SoftWrap(string text, int maxLineLength)
         {
             if (string.IsNullOrWhiteSpace(text))
             {
                 return text;
             }
 
-            var words = text.Split(' ');
             var stringBuilder = new StringBuilder();
             var currentLineLength = 0;
 
-            foreach (var word in words)
+            int i = 0;
+
+            while (i < text.Length)
             {
-                if (currentLineLength + word.Length + 1 > maxLineLength)
+                if (text[i] == '\r' || text[i] == '\n')
+                {
+                    i++;
+                    continue;
+                }
+
+                stringBuilder.Append(text[i]);
+                currentLineLength++;
+
+                if (currentLineLength >= maxLineLength && (char.IsWhiteSpace(text[i]) || char.IsPunctuation(text[i])))
                 {
                     stringBuilder.AppendLine();
                     currentLineLength = 0;
+
+                    i++; //Skip "delimiter".
+
+                    //Skip whitespace.
+                    while (char.IsWhiteSpace(text[i]))
+                    {
+                        i++;
+                    }
+                    continue;
                 }
 
-                if (currentLineLength > 0)
+                i++;
+            }
+
+            return stringBuilder.ToString();
+        }
+
+        /// <summary>
+        /// Inserts line-breaks after n-characters after given characters are encountered.
+        /// </summary>
+        public static string SoftWrap(string text, int maxLineLength, char[] lineBreakOn)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return text;
+            }
+
+            var stringBuilder = new StringBuilder();
+            var currentLineLength = 0;
+
+            int i = 0;
+
+            while (i < text.Length)
+            {
+                if (text[i] == '\r' || text[i] == '\n')
                 {
-                    stringBuilder.Append(' ');
-                    currentLineLength++;
+                    i++;
+                    continue;
                 }
 
-                stringBuilder.Append(word);
-                currentLineLength += word.Length;
+                stringBuilder.Append(text[i]);
+                currentLineLength++;
+
+                if (currentLineLength >= maxLineLength && lineBreakOn.Contains(text[i]))
+                {
+                    stringBuilder.AppendLine();
+                    currentLineLength = 0;
+
+                    i++; //Skip "delimiter".
+
+                    //Skip whitespace.
+                    while (char.IsWhiteSpace(text[i]))
+                    {
+                        i++;
+                    }
+                    continue;
+                }
+
+                i++;
             }
 
             return stringBuilder.ToString();
