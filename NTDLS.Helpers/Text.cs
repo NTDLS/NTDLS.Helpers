@@ -67,7 +67,7 @@ namespace NTDLS.Helpers
                     i++; //Skip "delimiter".
 
                     //Skip whitespace.
-                    while (char.IsWhiteSpace(text[i]))
+                    while (i < text.Length && char.IsWhiteSpace(text[i]))
                     {
                         i++;
                     }
@@ -114,7 +114,7 @@ namespace NTDLS.Helpers
                     i++; //Skip "delimiter".
 
                     //Skip whitespace.
-                    while (char.IsWhiteSpace(text[i]))
+                    while (i < text.Length && char.IsWhiteSpace(text[i]))
                     {
                         i++;
                     }
