@@ -27,11 +27,11 @@
                 targetType = Nullable.GetUnderlyingType(targetType);
             }
 
-            if (typeof(T) == typeof(string))
+            if (targetType == typeof(string))
             {
                 return (T?)Convert.ChangeType(value, targetType.EnsureNotNull());
             }
-            else if (typeof(T) == typeof(int))
+            else if (targetType == typeof(int))
             {
                 if (int.TryParse(value.Replace(",", ""), out var parsedResult) == false)
                 {
@@ -39,7 +39,7 @@
                 }
                 return (T?)Convert.ChangeType(parsedResult, targetType.EnsureNotNull());
             }
-            else if (typeof(T) == typeof(ulong?))
+            else if (targetType == typeof(ulong?))
             {
                 if (ulong.TryParse(value.Replace(",", ""), out var parsedResult) == false)
                 {
@@ -47,7 +47,7 @@
                 }
                 return (T?)Convert.ChangeType(parsedResult, targetType.EnsureNotNull());
             }
-            else if (typeof(T) == typeof(float))
+            else if (targetType == typeof(float))
             {
                 if (float.TryParse(value.Replace(",", ""), out var parsedResult) == false)
                 {
@@ -55,7 +55,7 @@
                 }
                 return (T?)Convert.ChangeType(parsedResult, targetType.EnsureNotNull());
             }
-            else if (typeof(T) == typeof(double))
+            else if (targetType == typeof(double))
             {
                 if (double.TryParse(value.Replace(",", ""), out var parsedResult) == false)
                 {
@@ -63,7 +63,7 @@
                 }
                 return (T?)Convert.ChangeType(parsedResult, targetType.EnsureNotNull());
             }
-            else if (typeof(T) == typeof(bool))
+            else if (targetType == typeof(bool))
             {
                 value = value.Replace(",", "").ToLower();
 
