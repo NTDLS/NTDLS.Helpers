@@ -35,15 +35,15 @@
             {
                 if (int.TryParse(value.Replace(",", ""), out var parsedResult) == false)
                 {
-                    throw new Exception($"Error converting value [{value}] to integer.");
+                    throw new Exception($"Error converting value [{value}] to {targetType.Name}.");
                 }
                 return (T?)Convert.ChangeType(parsedResult, targetType.EnsureNotNull());
             }
-            else if (targetType == typeof(ulong?))
+            else if (targetType == typeof(ulong))
             {
                 if (ulong.TryParse(value.Replace(",", ""), out var parsedResult) == false)
                 {
-                    throw new Exception($"Error converting value [{value}] to integer.");
+                    throw new Exception($"Error converting value [{value}] to {targetType.Name}.");
                 }
                 return (T?)Convert.ChangeType(parsedResult, targetType.EnsureNotNull());
             }
@@ -51,7 +51,7 @@
             {
                 if (float.TryParse(value.Replace(",", ""), out var parsedResult) == false)
                 {
-                    throw new Exception($"Error converting value [{value}] to float.");
+                    throw new Exception($"Error converting value [{value}] to {targetType.Name}.");
                 }
                 return (T?)Convert.ChangeType(parsedResult, targetType.EnsureNotNull());
             }
@@ -59,7 +59,15 @@
             {
                 if (double.TryParse(value.Replace(",", ""), out var parsedResult) == false)
                 {
-                    throw new Exception($"Error converting value [{value}] to double.");
+                    throw new Exception($"Error converting value [{value}] to {targetType.Name}.");
+                }
+                return (T?)Convert.ChangeType(parsedResult, targetType.EnsureNotNull());
+            }
+            else if (targetType == typeof(decimal))
+            {
+                if (decimal.TryParse(value.Replace(",", ""), out var parsedResult) == false)
+                {
+                    throw new Exception($"Error converting value [{value}] to {targetType.Name}.");
                 }
                 return (T?)Convert.ChangeType(parsedResult, targetType.EnsureNotNull());
             }
@@ -74,13 +82,13 @@
 
                 if (bool.TryParse(value, out var parsedResult) == false)
                 {
-                    throw new Exception($"Error converting value [{value}] to boolean.");
+                    throw new Exception($"Error converting value [{value}] to {targetType.Name}.");
                 }
                 return (T?)Convert.ChangeType(parsedResult, targetType.EnsureNotNull());
             }
             else
             {
-                throw new Exception($"Unsupported conversion type.");
+                throw new Exception($"Unsupported conversion type: [{targetType?.Name ?? typeof(T).Name}].");
             }
         }
 

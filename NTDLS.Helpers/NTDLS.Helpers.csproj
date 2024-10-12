@@ -24,7 +24,7 @@
     <PackageReleaseNotes>
       Nullable conversion fix.
     </PackageReleaseNotes>
-    <Version>1.3.4</Version>
+    <Version>1.3.5</Version>
     <EnableNETAnalyzers>False</EnableNETAnalyzers>
     <Description>Helpers for dealing with nullable types, static analyzer, text, exceptions, tasks, async, conversion, etc..</Description>
   </PropertyGroup>
