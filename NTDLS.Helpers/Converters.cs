@@ -86,6 +86,14 @@
                 }
                 return (T?)Convert.ChangeType(parsedResult, targetType.EnsureNotNull());
             }
+            else if (targetType == typeof(Guid))
+            {
+                return (T?)Convert.ChangeType(Guid.Parse(value), targetType.EnsureNotNull());
+            }
+            else if (targetType == typeof(DateTime))
+            {
+                return (T?)Convert.ChangeType(DateTime.Parse(value), targetType.EnsureNotNull());
+            }
             else
             {
                 throw new Exception($"Unsupported conversion type: [{targetType?.Name ?? typeof(T).Name}].");
