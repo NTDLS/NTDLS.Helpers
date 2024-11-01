@@ -62,7 +62,7 @@
                 i++;
             }
 
-            return string.Format(format[i], size.ToString($"N{decimalPlaces}"));
+            return string.Format(format[i], dSize.ToString($"N{decimalPlaces}"));
         }
 
         /// <summary>
@@ -79,7 +79,7 @@
                 i++;
             }
 
-            return string.Format(format[i], size.ToString($"N{decimalPlaces}"));
+            return string.Format(format[i], dSize.ToString($"N{decimalPlaces}"));
         }
 
         /// <summary>
@@ -103,7 +103,7 @@
                 i++;
             }
 
-            return string.Format(format[i], size.ToString($"N{decimalPlaces}"));
+            return string.Format(format[i], dSize.ToString($"N{decimalPlaces}"));
         }
 
         /// <summary>
@@ -120,7 +120,7 @@
                 i++;
             }
 
-            return string.Format(format[i], size.ToString($"N{decimalPlaces}"));
+            return string.Format(format[i], dSize.ToString($"N{decimalPlaces}"));
         }
 
         /// <summary>
