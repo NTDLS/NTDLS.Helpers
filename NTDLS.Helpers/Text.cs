@@ -128,11 +128,11 @@ namespace NTDLS.Helpers
         }
 
         /// <summary>
-        /// Adds a space to seperate a set of camel-cased words.
+        /// Adds a space to separate a set of camel-cased words.
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static string SeperateCamelCase(string text)
+        public static string SeparateCamelCase(string text)
         {
             return Regex.Replace(
                         Regex.Replace(
