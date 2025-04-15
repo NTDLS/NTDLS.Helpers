@@ -9,6 +9,21 @@ namespace NTDLS.Helpers
     public static class Text
     {
         /// <summary>
+        /// Truncates a string at the first whitespace after a given length.
+        /// </summary>
+        public static string TruncateAtWord(string text, int minLength, bool addEllipsis = true)
+        {
+            if (string.IsNullOrWhiteSpace(text) || text.Length <= minLength)
+                return text;
+
+            int nextSpace = text.IndexOf(' ', minLength);
+            if (nextSpace == -1)
+                return text; // No whitespace found — return full text
+
+            return text.Substring(0, nextSpace) + (addEllipsis ? "..." : string.Empty);
+        }
+
+        /// <summary>
         /// Returns a new string with the first occurrence of the given string replaced.
         /// </summary>
         /// <param name="input"></param>
