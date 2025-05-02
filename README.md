@@ -1,2 +1,2 @@
-# NTDLS.WinFormsHelpers
-Helpers for working with WinForms. Getting and setting values, simplifications for invoke, etc.
+# NTDLS.Helpers
+Helpers for working with .NET 8 and 9.
