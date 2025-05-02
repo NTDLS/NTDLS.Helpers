@@ -11,12 +11,12 @@ namespace NTDLS.Helpers
         /// <summary>
         /// Truncates a string at the first whitespace after a given length.
         /// </summary>
-        public static string TruncateAtWord(string text, int minLength, bool addEllipsis = true)
+        public static string TruncateAtWord(string text, int desiredLength, bool addEllipsis = true)
         {
-            if (string.IsNullOrWhiteSpace(text) || text.Length <= minLength)
+            if (string.IsNullOrWhiteSpace(text) || text.Length <= desiredLength)
                 return text;
 
-            int nextSpace = text.IndexOf(' ', minLength);
+            int nextSpace = text.IndexOf(' ', desiredLength);
             if (nextSpace == -1)
                 return text; // No whitespace found — return full text
 
