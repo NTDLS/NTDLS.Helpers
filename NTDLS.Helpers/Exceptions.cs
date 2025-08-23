@@ -94,7 +94,7 @@
             {
                 return func();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return onError(ex);
             }
