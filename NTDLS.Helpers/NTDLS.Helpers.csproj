@@ -24,7 +24,7 @@
     <PackageReleaseNotes>
       Introduced .net 10 support.
     </PackageReleaseNotes>
-    <Version>1.3.18</Version>
+    <Version>1.3.19</Version>
     <EnableNETAnalyzers>False</EnableNETAnalyzers>
     <Description>Helpers for dealing with nullable types, static analyzer, text, exceptions, tasks, async, conversion, etc..</Description>
   </PropertyGroup>
