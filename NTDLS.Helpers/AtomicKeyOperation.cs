@@ -12,18 +12,19 @@
     {
         private readonly Dictionary<string, VolatileReferenceCounter> _locks = new();
 
+        /// <remarks>
+        /// Count is only ever touched while the owning <see cref="AtomicKeyOperation"/> holds its
+        /// dictionary lock, so a plain field is sufficient here.
+        /// </remarks>
         private class VolatileReferenceCounter
         {
-            private long _count = 0;
-
-            public long Count
-                => Volatile.Read(ref _count);
+            public long Count { get; private set; } = 0;
 
             public void Increment()
-                => Interlocked.Increment(ref _count);
+                => Count++;
 
             public void Decrement()
-                => Interlocked.Decrement(ref _count);
+                => Count--;
         }
 
         /// <summary>
@@ -39,8 +40,12 @@
         /// <param name="function">The function to execute within the lock. This delegate is invoked while holding the lock associated with the
         /// specified key.</param>
         /// <returns>The value returned by the executed function.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> or <paramref name="function"/> is null.</exception>
         public T Execute<T>(string key, Func<T> function)
         {
+            ArgumentNullException.ThrowIfNull(key);
+            ArgumentNullException.ThrowIfNull(function);
+
             VolatileReferenceCounter? referenceCounter;
 
             lock (_locks)
@@ -89,8 +94,12 @@
         /// <param name="key">The key that identifies the lock scope. Actions with the same key are executed sequentially; actions with
         /// different keys may execute concurrently.</param>
         /// <param name="function">The action to execute within the lock. Cannot be null.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> or <paramref name="function"/> is null.</exception>
         public void Execute(string key, Action function)
         {
+            ArgumentNullException.ThrowIfNull(key);
+            ArgumentNullException.ThrowIfNull(function);
+
             VolatileReferenceCounter? referenceCounter;
 
             lock (_locks)
