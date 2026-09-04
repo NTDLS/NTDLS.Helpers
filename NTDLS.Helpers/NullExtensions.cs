@@ -78,11 +78,11 @@ namespace NTDLS.Helpers
         /// </summary>
         public static T EnsureNotNullOrEmpty<T>(this T? value, string? message = null, [CallerArgumentExpression(nameof(value))] string paramName = "") where T : struct
         {
-            if (value == null || value.HasValue == false)
+            if (value == null)
             {
                 if (message == null)
                 {
-                    throw new ArgumentNullException("Value should not be null or empty: '" + paramName + "'.");
+                    throw new ArgumentNullException(paramName, "Value should not be null or empty.");
                 }
 
                 throw new ArgumentException(message, paramName);
@@ -98,7 +98,7 @@ namespace NTDLS.Helpers
         {
             if (string.IsNullOrEmpty(value))
             {
-                throw new ArgumentNullException("Value should not be null or empty: '" + paramName + "'.");
+                throw new ArgumentNullException(paramName, "Value should not be null or empty.");
             }
             return value;
         }
@@ -111,7 +111,7 @@ namespace NTDLS.Helpers
         {
             if (string.IsNullOrWhiteSpace(value))
             {
-                throw new ArgumentNullException("Value should not be null or empty: '" + paramName + "'.");
+                throw new ArgumentNullException(paramName, "Value should not be null or empty.");
             }
         }
 
@@ -127,7 +127,7 @@ namespace NTDLS.Helpers
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string DefaultWhenNullOrEmpty(this string? value, string defaultValue)
-            => string.IsNullOrEmpty(value) == true ? defaultValue : value;
+            => string.IsNullOrEmpty(value) ? defaultValue : value;
 
         /// <summary>
         /// Returns true if the value is null.
