@@ -15,6 +15,11 @@ namespace NTDLS.Helpers
         {
             try
             {
+                if (value == null)
+                {
+                    return defaultValue;
+                }
+
                 return ConvertToNullable<T>(value, culture) ?? defaultValue;
             }
             catch
