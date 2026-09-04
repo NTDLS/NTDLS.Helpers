@@ -9,14 +9,25 @@ namespace NTDLS.Helpers
     {
         /// <summary>
         /// Makes a best effort conversion from a string to the given type.
+        /// Returns defaultValue if the value is null or if conversion fails.
         /// </summary>
-        public static T ConvertTo<T>(string? value, T defaultValue)
-            => ConvertToNullable<T>(value) ?? defaultValue;
+        public static T ConvertTo<T>(string? value, T defaultValue, CultureInfo? culture = null)
+        {
+            try
+            {
+                return ConvertToNullable<T>(value, culture) ?? defaultValue;
+            }
+            catch
+            {
+                return defaultValue;
+            }
+        }
 
         /// <summary>
         /// Makes a best effort conversion from a string to the given type.
+        /// Returns null if the value is null, throws if conversion fails.
         /// </summary>
-        public static T? ConvertToNullable<T>(string? value)
+        public static T? ConvertToNullable<T>(string? value, CultureInfo? culture = null)
         {
             if (value == null)
             {
@@ -24,146 +35,110 @@ namespace NTDLS.Helpers
             }
 
             var targetType = typeof(T);
-            if (Nullable.GetUnderlyingType(targetType) != null)
+            var underlyingType = Nullable.GetUnderlyingType(targetType);
+            if (underlyingType != null)
             {
-                targetType = Nullable.GetUnderlyingType(targetType);
+                targetType = underlyingType;
             }
 
-            if (targetType == typeof(string))
-            {
-                return (T?)Convert.ChangeType(value, targetType.EnsureNotNull(), CultureInfo.InvariantCulture);
-            }
-            else if (targetType == typeof(int))
-            {
-                if (int.TryParse(value, CultureInfo.InvariantCulture, out var parsedResult) == false)
-                {
-                    throw new Exception($"Error converting value [{value}] to {targetType.Name}.");
-                }
-                return (T?)Convert.ChangeType(parsedResult, targetType.EnsureNotNull(), CultureInfo.InvariantCulture);
-            }
-            else if (targetType == typeof(ulong))
-            {
-                if (ulong.TryParse(value, CultureInfo.InvariantCulture, out var parsedResult) == false)
-                {
-                    throw new Exception($"Error converting value [{value}] to {targetType.Name}.");
-                }
-                return (T?)Convert.ChangeType(parsedResult, targetType.EnsureNotNull(), CultureInfo.InvariantCulture);
-            }
-            else if (targetType == typeof(float))
-            {
-                if (float.TryParse(value, CultureInfo.InvariantCulture, out var parsedResult) == false)
-                {
-                    throw new Exception($"Error converting value [{value}] to {targetType.Name}.");
-                }
-                return (T?)Convert.ChangeType(parsedResult, targetType.EnsureNotNull(), CultureInfo.InvariantCulture);
-            }
-            else if (targetType == typeof(double))
-            {
-                if (double.TryParse(value, CultureInfo.InvariantCulture, out var parsedResult) == false)
-                {
-                    throw new Exception($"Error converting value [{value}] to {targetType.Name}.");
-                }
-                return (T?)Convert.ChangeType(parsedResult, targetType.EnsureNotNull(), CultureInfo.InvariantCulture);
-            }
-            else if (targetType == typeof(decimal))
-            {
-                if (decimal.TryParse(value, CultureInfo.InvariantCulture, out var parsedResult) == false)
-                {
-                    throw new Exception($"Error converting value [{value}] to {targetType.Name}.");
-                }
-                return (T?)Convert.ChangeType(parsedResult, targetType.EnsureNotNull(), CultureInfo.InvariantCulture);
-            }
-            else if (targetType == typeof(bool))
-            {
-                value = value.Replace(",", "").ToLower();
-
-                if (value.All(char.IsNumber))
-                {
-                    value = int.Parse(value, CultureInfo.InvariantCulture) != 0 ? "true" : "false";
-                }
-
-                if (bool.TryParse(value, out var parsedResult) == false)
-                {
-                    throw new Exception($"Error converting value [{value}] to {targetType.Name}.");
-                }
-                return (T?)Convert.ChangeType(parsedResult, targetType.EnsureNotNull(), CultureInfo.InvariantCulture);
-            }
-            else if (targetType == typeof(Guid))
-            {
-                return (T?)Convert.ChangeType(Guid.Parse(value, CultureInfo.InvariantCulture), targetType.EnsureNotNull());
-            }
-            else if (targetType == typeof(DateTime))
-            {
-                return (T?)Convert.ChangeType(DateTime.Parse(value, CultureInfo.InvariantCulture), targetType.EnsureNotNull());
-            }
-            else
-            {
-                throw new Exception($"Unsupported conversion type: [{targetType?.Name ?? typeof(T).Name}].");
-            }
+            var parsed = ParseValue(targetType, value, culture ?? CultureInfo.InvariantCulture);
+            return (T?)Convert.ChangeType(parsed, targetType, culture ?? CultureInfo.InvariantCulture);
         }
 
         /// <summary>
-        /// Makes a best effort conversion from a string to the given type.
+        /// Makes a best effort conversion from a string to the given type. Throws if the
+        /// value is null or if conversion fails.
         /// </summary>
-        public static T ConvertTo<T>(string value)
+        public static T ConvertTo<T>(string value, CultureInfo? culture = null)
         {
-            if (typeof(T) == typeof(string))
-            {
-                return (T)Convert.ChangeType(value, typeof(T), CultureInfo.InvariantCulture);
-            }
-            else if (typeof(T) == typeof(int))
-            {
-                if (int.TryParse(value, CultureInfo.InvariantCulture, out var parsedResult) == false)
-                {
-                    throw new Exception($"Error converting value [{value}] to integer.");
-                }
-                return (T)Convert.ChangeType(parsedResult, typeof(T), CultureInfo.InvariantCulture);
-            }
-            else if (typeof(T) == typeof(ulong))
-            {
-                if (ulong.TryParse(value, CultureInfo.InvariantCulture, out var parsedResult) == false)
-                {
-                    throw new Exception($"Error converting value [{value}] to integer.");
-                }
-                return (T)Convert.ChangeType(parsedResult, typeof(T), CultureInfo.InvariantCulture);
-            }
-            else if (typeof(T) == typeof(float))
-            {
-                if (float.TryParse(value, CultureInfo.InvariantCulture, out var parsedResult) == false)
-                {
-                    throw new Exception($"Error converting value [{value}] to float.");
-                }
-                return (T)Convert.ChangeType(parsedResult, typeof(T), CultureInfo.InvariantCulture);
-            }
-            else if (typeof(T) == typeof(double))
-            {
-                if (double.TryParse(value, CultureInfo.InvariantCulture, out var parsedResult) == false)
-                {
-                    throw new Exception($"Error converting value [{value}] to double.");
-                }
-                return (T)Convert.ChangeType(parsedResult, typeof(T), CultureInfo.InvariantCulture);
-            }
-            else if (typeof(T) == typeof(bool))
-            {
-                value = value.ToLower();
+            ArgumentNullException.ThrowIfNull(value);
 
-                if (value.All(char.IsNumber))
-                {
-                    if (int.Parse(value, CultureInfo.InvariantCulture) != 0)
-                        value = "true";
-                    else
-                        value = "false";
-                }
-
-                if (bool.TryParse(value, out var parsedResult) == false)
-                {
-                    throw new Exception($"Error converting value [{value}] to boolean.");
-                }
-                return (T)Convert.ChangeType(parsedResult, typeof(T), CultureInfo.InvariantCulture);
-            }
-            else
+            var targetType = typeof(T);
+            var underlyingType = Nullable.GetUnderlyingType(targetType);
+            if (underlyingType != null)
             {
-                throw new Exception($"Unsupported conversion type.");
+                targetType = underlyingType;
+            }
+
+            var parsed = ParseValue(targetType, value, culture ?? CultureInfo.InvariantCulture);
+            return (T)Convert.ChangeType(parsed, targetType, culture ?? CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// Parses the given string into an instance of targetType, throwing a consistent
+        /// exception on failure. targetType must already be de-nullabled by the caller.
+        /// </summary>
+        private static object ParseValue(Type targetType, string value, CultureInfo culture)
+        {
+            try
+            {
+                if (targetType == typeof(char))
+                {
+                    if (value.Length != 1)
+                    {
+                        throw new FormatException($"Value [{value}] is not a single character.");
+                    }
+                    return value[0];
+                }
+                else if (targetType == typeof(bool))
+                {
+                    var boolValue = value.Replace(",", "").Trim().ToLowerInvariant();
+
+                    if (boolValue.Length > 0 && boolValue.All(char.IsNumber))
+                    {
+                        boolValue = int.Parse(boolValue, culture) != 0 ? "true" : "false";
+                    }
+
+                    if (bool.TryParse(boolValue, out var parsedResult) == false)
+                    {
+                        throw new FormatException($"Value [{value}] is not a valid boolean.");
+                    }
+                    return parsedResult;
+                }
+                else if (targetType == typeof(string))
+                    return value;
+                else if (targetType == typeof(byte))
+                    return byte.Parse(value, culture);
+                else if (targetType == typeof(sbyte))
+                    return sbyte.Parse(value, culture);
+                else if (targetType == typeof(short))
+                    return short.Parse(value, culture);
+                else if (targetType == typeof(ushort))
+                    return ushort.Parse(value, culture);
+                else if (targetType == typeof(int))
+                    return int.Parse(value, culture);
+                else if (targetType == typeof(uint))
+                    return uint.Parse(value, culture);
+                else if (targetType == typeof(long))
+                    return long.Parse(value, culture);
+                else if (targetType == typeof(ulong))
+                    return ulong.Parse(value, culture);
+                else if (targetType == typeof(float))
+                    return float.Parse(value, culture);
+                else if (targetType == typeof(double))
+                    return double.Parse(value, culture);
+                else if (targetType == typeof(decimal))
+                    return decimal.Parse(value, culture);
+                else if (targetType == typeof(Guid))
+                    return Guid.Parse(value);
+                else if (targetType == typeof(DateTime))
+                    return DateTime.Parse(value, culture);
+                else if (targetType == typeof(DateTimeOffset))
+                    return DateTimeOffset.Parse(value, culture);
+                else if (targetType == typeof(TimeSpan))
+                    return TimeSpan.Parse(value, culture);
+                else if (targetType.IsEnum)
+                    return Enum.Parse(targetType, value, true);
+
+                throw new NotSupportedException($"Unsupported conversion type: [{targetType.Name}].");
+            }
+            catch (NotSupportedException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new FormatException($"Error converting value [{value}] to {targetType.Name}.", ex);
             }
         }
     }
