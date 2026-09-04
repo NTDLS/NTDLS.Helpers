@@ -24,7 +24,7 @@ namespace NTDLS.Helpers
 
             return $"{Iterations}.{Convert.ToBase64String(salt)}.{Convert.ToBase64String(hash)}";
         }
-        
+
         /// <summary>
         /// Verifies a password against a hashed password.
         /// </summary>
