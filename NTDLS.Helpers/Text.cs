@@ -13,6 +13,8 @@ namespace NTDLS.Helpers
         /// </summary>
         public static string TruncateAtWord(string text, int desiredLength, bool addEllipsis = true)
         {
+            desiredLength = Math.Max(0, desiredLength);
+
             if (string.IsNullOrWhiteSpace(text) || text.Length <= desiredLength)
                 return text;
 
@@ -21,23 +23,6 @@ namespace NTDLS.Helpers
                 return text; // No whitespace found — return full text
 
             return text.Substring(0, nextSpace) + (addEllipsis ? "..." : string.Empty);
-        }
-
-        /// <summary>
-        /// Returns a new string with the first occurrence of the given string replaced.
-        /// </summary>
-        /// <param name="input"></param>
-        /// <param name="search"></param>
-        /// <param name="replacement"></param>
-        /// <returns></returns>
-        public static string ReplaceFirst(this string input, string search, string replacement)
-        {
-            int pos = input.IndexOf(search);
-            if (pos < 0)
-            {
-                return input; // Return the original string if the search string is not found
-            }
-            return input.Substring(0, pos) + replacement + input.Substring(pos + search.Length);
         }
 
         /// <summary>
@@ -76,6 +61,11 @@ namespace NTDLS.Helpers
 
                 if (currentLineLength >= maxLineLength && (char.IsWhiteSpace(text[i]) || char.IsPunctuation(text[i])))
                 {
+                    if (char.IsWhiteSpace(text[i]))
+                    {
+                        stringBuilder.Length--; // Don't leave the wrapping whitespace as a trailing character on the line.
+                    }
+
                     stringBuilder.AppendLine();
                     currentLineLength = 0;
 
@@ -123,6 +113,11 @@ namespace NTDLS.Helpers
 
                 if (currentLineLength >= maxLineLength && lineBreakOn.Contains(text[i]))
                 {
+                    if (char.IsWhiteSpace(text[i]))
+                    {
+                        stringBuilder.Length--; // Don't leave the wrapping whitespace as a trailing character on the line.
+                    }
+
                     stringBuilder.AppendLine();
                     currentLineLength = 0;
 
@@ -210,8 +205,6 @@ namespace NTDLS.Helpers
         /// <param name="input"></param>
         /// <returns></returns>
         public static string RemoveWhitespace(string input)
-            => new(input.ToCharArray()
-                .Where(c => !char.IsWhiteSpace(c))
-                .ToArray());
+            => new(input.Where(c => !char.IsWhiteSpace(c)).ToArray());
     }
 }
