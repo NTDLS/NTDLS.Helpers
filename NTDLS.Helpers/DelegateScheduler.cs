@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 
 namespace NTDLS.Helpers
 {
@@ -22,6 +22,7 @@ namespace NTDLS.Helpers
             private readonly Action _action;
             private readonly Timer _timer;
             private int _isRunning = 0;
+            private volatile int _timerThreadId = -1;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="WorkItem"/> class, which schedules and executes a recurring action.
@@ -58,7 +59,18 @@ namespace NTDLS.Helpers
                 Interval = interval;
                 At = null; // No specific time for recurring execution.
                 _action = action;
-                _timer = new Timer((o) => TryRun(), null, startupVariability.Value, interval);
+                _timer = new Timer((o) =>
+                {
+                    _timerThreadId = Environment.CurrentManagedThreadId;
+                    try
+                    {
+                        TryRun();
+                    }
+                    finally
+                    {
+                        _timerThreadId = -1;
+                    }
+                }, null, startupVariability.Value, interval);
             }
 
             /// <summary>
@@ -80,14 +92,26 @@ namespace NTDLS.Helpers
                 Interval = null; // No interval for one-time execution.
                 At = at;
                 _action = action;
+
+                var dueTime = at - DateTime.UtcNow;
+                if (dueTime < TimeSpan.Zero)
+                {
+                    dueTime = TimeSpan.Zero;
+                }
+
                 _timer = new Timer((o) =>
                 {
-                    if (DateTime.UtcNow >= At)
+                    _timerThreadId = Environment.CurrentManagedThreadId;
+                    try
                     {
                         Scheduler.TryUnregister(Id); // Unregister after execution.
                         TryRun();
                     }
-                }, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+                    finally
+                    {
+                        _timerThreadId = -1;
+                    }
+                }, null, dueTime, Timeout.InfiniteTimeSpan);
             }
 
             public bool TryRun()
@@ -114,7 +138,20 @@ namespace NTDLS.Helpers
             public void Dispose()
             {
                 GC.SuppressFinalize(this);
-                _timer.Dispose();
+
+                //If we're disposing from within our own timer callback (e.g. a one-time work item
+                //unregistering itself), waiting on the timer's callback-completion handle would deadlock.
+                if (Environment.CurrentManagedThreadId == _timerThreadId)
+                {
+                    _timer.Dispose();
+                    return;
+                }
+
+                using var waitHandle = new ManualResetEvent(false);
+                if (_timer.Dispose(waitHandle))
+                {
+                    waitHandle.WaitOne();
+                }
             }
         }
 
@@ -130,13 +167,16 @@ namespace NTDLS.Helpers
         /// <param name="startupVariability">Optional maximum amount of time to use for a generating a random "first start" time. This is used to assist in preventing timers with the same interval from running at the same time.</param>
         public bool TryRegister(string name, TimeSpan interval, Action action, bool startImmediately = false, TimeSpan? startupVariability = null)
         {
-            if (IsRegistered(name))
-                return false; // Task with this name already exists.
+            ArgumentException.ThrowIfNullOrEmpty(name);
+            ArgumentNullException.ThrowIfNull(action);
 
             var workItem = new WorkItem(this, name, action, interval, startupVariability);
 
             if (!_workItems.TryAdd(name, workItem))
-                throw new InvalidOperationException($"A task named '{name}' is already registered.");
+            {
+                workItem.Dispose(); // Not stored anywhere and would otherwise keep firing forever.
+                return false;
+            }
 
             if (startImmediately)
             {
@@ -186,10 +226,16 @@ namespace NTDLS.Helpers
         /// <param name="startupVariability">Optional maximum amount of time to use for a generating a random "first start" time. This is used to assist in preventing timers with the same interval from running at the same time.</param>
         public void Register(string name, TimeSpan interval, Action action, bool startImmediately = false, TimeSpan? startupVariability = null)
         {
+            ArgumentException.ThrowIfNullOrEmpty(name);
+            ArgumentNullException.ThrowIfNull(action);
+
             var workItem = new WorkItem(this, name, action, interval, startupVariability);
 
             if (!_workItems.TryAdd(name, workItem))
+            {
+                workItem.Dispose(); // Not stored anywhere and would otherwise keep firing forever.
                 throw new InvalidOperationException($"A task named '{name}' is already registered.");
+            }
 
             if (startImmediately)
             {
@@ -208,10 +254,16 @@ namespace NTDLS.Helpers
         /// <exception cref="InvalidOperationException">Thrown if a task with the specified <paramref name="name"/> is already registered.</exception>
         public void Register(string name, DateTime at, Action action)
         {
+            ArgumentException.ThrowIfNullOrEmpty(name);
+            ArgumentNullException.ThrowIfNull(action);
+
             var workItem = new WorkItem(this, name, action, at);
 
             if (!_workItems.TryAdd(name, workItem))
+            {
+                workItem.Dispose(); // Not stored anywhere and would otherwise keep firing forever.
                 throw new InvalidOperationException($"A task named '{name}' is already registered.");
+            }
         }
 
         /// <summary>
